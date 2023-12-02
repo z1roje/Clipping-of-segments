@@ -74,4 +74,6 @@ int main()
     for (auto& v : code) {
         cout << v[0] << " " << v[1] << endl;
     }
+    
+    //dfdkmndkdfgjfdgjdfgodgjkdofgjfkgjfdgjdkfgjfd
 }
