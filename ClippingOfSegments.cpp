@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
+#include <thread>
 using namespace std;
 //rectangle[0].first ~ x_a, rectangle[0].second ~ y_a
 
@@ -67,7 +68,8 @@ void print_all_cords(vector<vector<pair<double, double>>> lines) {
 int main()
 {
     //cout << fixed << setprecision(10);
-    ifstream file("problem.txt"); // Открываем файл
+    string name = "test7.txt";
+    ifstream file(name); // Открываем файл
     vector <vector<pair<double, double>>> lines;
     vector <pair<double, double>> rectangle;
 
@@ -86,6 +88,7 @@ int main()
         lines.push_back(tmp);
     }
 
+    auto start = chrono::high_resolution_clock::now();
     //Создание кодов для точек
     vector <vector<int>> code;
     for (auto& line : lines) {
@@ -132,12 +135,22 @@ int main()
                     y_1 = lines[i][0].second, x_2 = lines[i][1].first, y_2 = lines[i][1].second;
                 
                 double new_x=0, new_y=0;
-                ans.push_back(make_pair(x_a, (y_2 - y_1) / (x_2 - x_1) * (x_a - x_1) + y_1));
-                ans.push_back(make_pair(x_b, (y_2 - y_1) / (x_2 - x_1) * (x_b - x_1) + y_1));
-                ans.push_back(make_pair((x_2 - x_1) / (y_2 - y_1) * (y_a - y_1) + x_1, y_a));
-                ans.push_back(make_pair((x_2 - x_1) / (y_2 - y_1) * (y_b - y_1) + x_1, y_b));
-
                 
+                if ((x_1 != x_2) && (y_1 != y_2)) {
+                    ans.push_back(make_pair(x_a, (y_2 - y_1) / (x_2 - x_1) * (x_a - x_1) + y_1));
+                    ans.push_back(make_pair(x_b, (y_2 - y_1) / (x_2 - x_1) * (x_b - x_1) + y_1));
+                    ans.push_back(make_pair((x_2 - x_1) / (y_2 - y_1) * (y_a - y_1) + x_1, y_a));
+                    ans.push_back(make_pair((x_2 - x_1) / (y_2 - y_1) * (y_b - y_1) + x_1, y_b));
+                }
+
+                else if (x_1 == x_2) {
+                    ans.push_back(make_pair(x_1, y_a));
+                    ans.push_back(make_pair(x_1, y_b));
+                }
+                else if (y_1 == y_2) {
+                    ans.push_back(make_pair(x_a, y_1));
+                    ans.push_back(make_pair(x_b, y_1));
+                }
                 for (auto& point : ans) {
                     //cout << x_1<<"<="<<point.first << "<= " << x_2 <<"  "<< y_1 << "<=" << point.second << "<=" << y_2 << " " << distance(point.first, point.second, lines[i][flag].first, lines[i][flag].second) << endl;
                     if ((min(x_1,x_2) <= point.first) && (point.first <= max(x_1,x_2)) && (min(y_1,y_2) <= point.second) && (point.second <= max(y_1,y_2)) &&
@@ -176,9 +189,13 @@ int main()
         i++;
     }
 
+    auto end = chrono::high_resolution_clock::now();
+
+    chrono::duration<float> duration = end - start;
+    cout << "Duration " << duration.count() << endl;
     //вывод ответа
     //cout << endl;
-    cout << reslines.size() << endl;
-    print_all_cords(reslines);
-
+    /*cout << reslines.size() << endl;
+    print_all_cords(reslines);*/
+    
 }
